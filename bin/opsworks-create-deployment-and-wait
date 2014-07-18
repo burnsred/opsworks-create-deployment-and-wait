@@ -1,0 +1,25 @@
+#!/usr/bin/env python
+
+import json
+import sys
+import os
+from opsworks_create_deployment_and_wait import (
+    create_deployment,
+    wait_until_deployment_is_finished
+)
+
+stack_id = sys.argv[1]
+command = json.loads(sys.argv[2])
+comment = sys.argv[3]
+
+deployment_id = create_deployment(stack_id, command, comment)
+
+sys.stderr.write("Created deployment '{0}'\n".format(deployment_id))
+sys.stderr.write("Waiting for deployment to finish\n")
+
+final_status = wait_until_deployment_is_finished(deployment_id)
+
+sys.stderr.write("Final status {0}\n".format(final_status))
+
+if final_status == 'failed':
+    sys.exit(1)
