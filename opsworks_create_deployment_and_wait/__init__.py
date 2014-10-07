@@ -3,8 +3,8 @@ from boto import opsworks
 
 connection = opsworks.connect_to_region('us-east-1')
 
-def create_deployment(stack_id, command, comment):
-	deployment = connection.create_deployment(stack_id, command, comment=comment)
+def create_deployment(stack_id, command, comment, app_id):
+	deployment = connection.create_deployment(stack_id, command, comment=comment, app_id=app_id)
 	return deployment['DeploymentId']
 
 def get_status_of_deployment(deployment_id):
