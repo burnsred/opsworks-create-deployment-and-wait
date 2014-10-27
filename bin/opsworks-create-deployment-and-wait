@@ -1,18 +1,32 @@
 #!/usr/bin/env python
 
+import argparse
 import json
-import sys
 import os
+import sys
+
 from opsworks_create_deployment_and_wait import (
     create_deployment,
     wait_until_deployment_is_finished
 )
 
-stack_id = sys.argv[1]
-command = json.loads(sys.argv[2])
-comment = sys.argv[3]
+parser = argparse.ArgumentParser(description='Create an OpsWorks deployment.')
 
-deployment_id = create_deployment(stack_id, command, comment)
+parser.add_argument('--stack-id', action='store', required=True)
+parser.add_argument('--command', action='store', required=True)
+parser.add_argument('--comment', action='store', required=True)
+parser.add_argument('--layer-id', action='store')
+parser.add_argument('--app-id', action='store')
+
+args = parser.parse_args()
+
+deployment_id = create_deployment(
+	args.stack_id,
+	json.loads(args.command),
+	args.comment,
+	app_id=args.app_id,
+	layer_id=args.layer_id
+)
 
 sys.stderr.write("Created deployment '{0}'\n".format(deployment_id))
 sys.stderr.write("Waiting for deployment to finish\n")
